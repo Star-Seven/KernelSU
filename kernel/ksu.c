@@ -11,6 +11,10 @@
 #include "ksu.h"
 #include "throne_tracker.h"
 
+#ifdef CONFIG_KSU_SUSFS
+#include <linux/susfs.h>
+#endif
+
 static struct workqueue_struct *ksu_workqueue;
 
 bool ksu_queue_work(struct work_struct *work)
@@ -37,6 +41,10 @@ extern void ksu_sucompat_exit();
 extern void ksu_ksud_init();
 extern void ksu_ksud_exit();
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 14, 0)
+extern void ksu_enable_selinux_compat();
+#endif
+
 int __init kernelsu_init(void)
 {
 #ifdef CONFIG_KSU_DEBUG
@@ -47,6 +55,10 @@ int __init kernelsu_init(void)
 	pr_alert("**                                                         **");
 	pr_alert("**     NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE    **");
 	pr_alert("*************************************************************");
+#endif
+
+#ifdef CONFIG_KSU_SUSFS
+	susfs_init();
 #endif
 
 	ksu_core_init();
@@ -60,6 +72,9 @@ int __init kernelsu_init(void)
 #ifdef CONFIG_KPROBES
 	ksu_sucompat_init();
 	ksu_ksud_init();
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 14, 0)
+	ksu_enable_selinux_compat();
+#endif
 #else
 	pr_alert("KPROBES is disabled, KernelSU may not work, please check https://kernelsu.org/guide/how-to-integrate-for-non-gki.html");
 #endif
@@ -94,4 +109,7 @@ module_exit(kernelsu_exit);
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("weishu");
 MODULE_DESCRIPTION("Android KernelSU");
+
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 0, 0)
 MODULE_IMPORT_NS(VFS_internal_I_am_really_a_filesystem_and_am_NOT_a_driver);
+#endif
