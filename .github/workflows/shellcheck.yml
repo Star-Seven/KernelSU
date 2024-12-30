@@ -3,13 +3,13 @@ name: ShellCheck
 on:
   push:
     branches:
-      - 'next'
+      - 'testing'
     paths:
       - '.github/workflows/shellcheck.yml'
       - '**/*.sh'
   pull_request:
     branches:
-      - 'next'
+      - 'testing'
     paths:
       - '.github/workflows/shellcheck.yml'
       - '**/*.sh'
