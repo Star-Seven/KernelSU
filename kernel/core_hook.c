@@ -126,7 +126,7 @@ static bool ksu_module_mounted = false;
 
 extern int ksu_handle_sepolicy(unsigned long arg3, void __user *arg4);
 
-static bool ksu_su_compat_enabled = true;
+bool ksu_su_compat_enabled __read_mostly = true;
 extern void ksu_sucompat_init();
 extern void ksu_sucompat_exit();
 
