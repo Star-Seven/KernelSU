@@ -333,17 +333,20 @@ void ksu_sucompat_exit()
 
 #ifdef CONFIG_KSU_SUSFS_SUS_SU
 extern bool ksu_devpts_hook;
+extern bool ksu_su_compat_enabled __read_mostly;
 
 void ksu_susfs_disable_sus_su(void) {
 	pr_info("susfs->ksu_sucompat_init!\n")
 	ksu_sucompat_init()
 	ksu_devpts_hook = false;
+	ksu_su_compat_enabled = true;
 }
 
 void ksu_susfs_enable_sus_su(void) {
 	pr_info("susfs->ksu_sucompat_exit!\n")
 	ksu_sucompat_exit();
 	ksu_devpts_hook = true;
+	ksu_su_compat_enabled = false;
 }
 #endif // #ifdef CONFIG_KSU_SUSFS_SUS_SU
 #else // We still have non-GKI support!
